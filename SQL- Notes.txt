@@ -1,0 +1,41 @@
+# SQL Notes
+
+SQL (Structured Query Language) is used to store, process, and analyze data based on user requirements using SQL queries.
+
+DQL, DDL, DML, DCL, and TCL are important sub-languages used in data management and maintenance. Understanding the differences between them is crucial for managing and maintaining a database effectively.
+
+We can interact with databases through five SQL sub-languages:
+
+## 1. DQL – Data Query Language
+- Definition: DQL stands for Data Query Language. It is used to retrieve data from databases.
+- Purpose: Selecting, filtering, and sorting records from tables.
+- Examples: SELECT * FROM Customer;  
+  SELECT Name, Amount FROM Customer WHERE Amount > 20000 ORDER BY Amount DESC;
+
+## 2. DDL – Data Definition Language
+- Definition: DDL stands for Data Definition Language. It is used to define the structure of the database.
+- Purpose: Create, modify, and delete database objects such as tables, indexes, and constraints.
+- Examples: CREATE TABLE Customer (...);  
+  ALTER TABLE Customer ADD COLUMN Age INT;  
+  DROP TABLE Customer;
+
+## 3. DML – Data Manipulation Language
+- Definition: DML stands for Data Manipulation Language. It is used to manipulate data in a database.
+- Purpose: Insert, update, and delete data from one or more tables.
+- Examples: INSERT INTO Customer (Id, Name, Amount) VALUES (1, 'Rahul', 25000);  
+  UPDATE Customer SET Amount = 30000 WHERE Id = 1;  
+  DELETE FROM Customer WHERE Id = 1;
+
+## 4. DCL – Data Control Language
+- Definition: DCL stands for Data Control Language. It is used to control access to a database.
+- Purpose: Grant and revoke permissions to users and roles. This is very important as you are liable to provide access to the right role or user.
+- Examples: GRANT SELECT ON Customer TO user1;  
+  REVOKE SELECT ON Customer FROM user1;
+
+## 5. TCL – Transaction Control Language
+- Definition: TCL stands for Transaction Control Language. It is used to manage transactions in a database.
+- Purpose: Ensure data consistency and integrity by controlling transactions.
+- Examples: BEGIN TRANSACTION;  
+  UPDATE Customer SET Amount = Amount - 5000 WHERE Id = 1;  
+  COMMIT;   -- Save changes  
+  ROLLBACK; -- Undo changes
