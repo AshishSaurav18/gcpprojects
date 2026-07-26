@@ -1,0 +1,11 @@
+Dataproc:
+Dataproc is a fully managed cluster-based environment for running Hadoop and Spark jobs.
+It removes the operational complexity involving setting up, managing, and maintaining the clusters. 
+You can integrate it with other GCP services like BigQuery and Cloud Storage. 
+It’s designed to process large datasets and leverages the Spark framework using Python. 
+It supports both batch and streaming processing, and works with other big data tools like Hive, Pig, and Presto.
+DataFlow:
+Dataflow is a serverless data processing tool that supports both batch and streaming workloads, 
+especially excelling in real-time streaming. It leverages the Apache Beam framework, typically using Python, 
+and seamlessly integrates with other Google Cloud services,
+offering a flexible and powerful solution for end-to-end data pipelines.
