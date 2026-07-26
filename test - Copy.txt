@@ -3,3 +3,36 @@ Can you tell me about a problem you encountered in your data engineering work th
 Answer:- “In my insurance project, we were ingesting data from 11–12 different admin systems into Google Cloud Storage. A challenge I faced was that the incoming files had inconsistent naming conventions and timestamps, which made it difficult to align the data correctly and sometimes caused pipeline failures.
 My solution was to add a preprocessing step in the Bronze layer to standardize filenames and normalize timestamps before moving the data forward. I implemented simple transformation rules using Dataproc and SQL so that every file followed a consistent structure.
 This creative fix ensured that the rest of the pipeline — Silver and Gold layers — ran smoothly, and the data landed cleanly in BigQuery for analytics. It turned a recurring issue into a reliable process.”
+-------------------------------------------------------------------------------------------------------
+inconsistent Timestamp- Imagine your raw file has a column with timestamps like 2026/07/27 01:45 or 27-07-2026 01:45.
+to_timestamp(..., "yyyy-MM-dd HH:mm:ss") → converts whatever is inside that column into a proper timestamp format.
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, to_timestamp, regexp_replace
+
+# 1. Start Spark session (Dataproc cluster will handle the backend)
+spark = SparkSession.builder.appName("BronzeLayerPreprocessing").getOrCreate()
+
+# 2. Read raw files from GCS bucket
+raw_df = spark.read.option("header", "true").csv("gs://your-bucket/raw-data/*.csv")
+
+# 3. Normalize timestamps (convert inconsistent formats into a standard one)
+clean_df = raw_df.withColumn(
+    "event_time",
+    to_timestamp(col("event_time"), "yyyy-MM-dd HH:mm:ss")
+)
+
+# 4. Standardize schema (rename inconsistent column names)
+# Example: some files have 'Cust_ID', others have 'CustomerId'
+if "Cust_ID" in clean_df.columns:
+    clean_df = clean_df.withColumnRenamed("Cust_ID", "CustomerId")
+
+# 5. Clean up string values (remove unwanted characters, trim spaces)
+clean_df = clean_df.withColumn("CustomerName", regexp_replace(col("CustomerName"), "[^a-zA-Z0-9 ]", ""))
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+For string cleanup, I used PySpark’s regexp_replace function. It allowed me to remove special characters from text fields like CustomerName, Address, or City. I applied this consistently across all string columns that needed normalization.”
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 6. Write cleaned data back to branch layer in a consistent format
+clean_df.write.mode("overwrite").parquet("gs://your-bucket/branch-layer/cleaned-data/")
+
+
