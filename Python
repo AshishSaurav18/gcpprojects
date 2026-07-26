@@ -1,0 +1,103 @@
+Count the occurence of each character in String or list or Tuple.
+====================================================================================================================================
+collections is a built‑in Python module that provides specialized container datatypes to simplify and optimize data handling.
+Definition: Counter is a class inside the collections module that counts how many times each element appears in a sequence (string, list, tuple, etc.).
+Purpose: It creates a dictionary-like object where keys are the elements and values are their counts.
+=====================================================================================================================================
+from collections import Counter
+
+# String example
+variable = "Hello World"   # string
+char_count = Counter(variable)
+print(char_count)
+
+# List example
+values = [1, 2, 3, 1, 4, 3]   # list
+list_count = Counter(values)
+print(list_count)
+
+# Tuple example
+alphabets = ('a', 'b', 'c', 'd', 'a', 'c')   # tuple
+tuple_count = Counter(alphabets)
+print(tuple_count)
+=======================================================================================================================================
+#Control Statement
+----------------------------------------------String-------------------------------------------------------------------------
+s = "Hello World"
+char_count = {}
+
+for ch in s:
+    if ch in char_count:
+        char_count[ch] += 1   # increment if already exists
+    else:
+        char_count[ch] = 1    # initialize with 1
+
+print(char_count)
+----------------------------------------list value-------------------------------------------------------------------------------
+s = [1, 2, 3, 1, 3, 4, 5, 6, 8, 7]
+value_count = {}
+
+for v in s:
+    if v in value_count:
+        value_count[v] += 1   # increment if already exists
+    else:
+        value_count[v] = 1    # initialize with 1
+
+print(value_count)
+
+--------------------------------------Tuple------------------------------------------------------------------------------------------
+s = ('a', 'b', 'c', 'd', 'a', 'b', 'd', 'e')
+t = {}
+
+for value in s:
+    if value in t:
+        t[value] += 1   # increment if already exists
+    else:
+        t[value] = 1    # initialize with 1
+
+print(t)
+
+
+=========================================================================================================================================
+#  Using PANDAS
+
+--pd.Series() → converts your data (string/list/tuple) into a pandas Series.
+
+.value_counts() → counts unique values and sorts them by frequency.---
+
+----------------------------------------------------------------String------------------------------------------------------------------
+import pandas as pd   # ✅ Always import pandas first
+
+a = "Hello world"    
+series = pd.Series(list(a))   # ✅ Convert string → list of characters → Series
+
+print(series.value_counts())  # ✅ Call the method with parentheses
+--------------------------------------------------------list----------------------------------------------------------------------------------
+import pandas as pd   # ✅ Import pandas
+
+a = [1, 2, 3, 4, 1, 2, 5]       
+series = pd.Series(a)           # ✅ Use pd.Series (capital S)
+print(series.value_counts())    # ✅ Use value_counts() with parentheses
+------------------------------------Tuple------------------------------------------------------------------------------------------------------
+import pandas as pd
+ a= ( 'a', 'b', 'c', 'd', 'e')
+series = pd.Series(list(a))
+print(series.value_count())
+
+import pandas as pd   # ✅ Import pandas
+
+a = ('a', 'b', 'c', 'd', 'e')   
+series = pd.Series(a)           # ✅ Use pd.Series (capital S)
+print(series.value_counts())    # ✅ Use value_counts() with parentheses
+++++++++++++++++++some imp points+++++++++++++++++++++++++++++++++++++++++++++++
+Tuple/List → already a sequence of elements. Pandas can directly treat each element as a row in the Series.
+
+String → is treated as one single object by pandas. If you pass "Hello World" directly, pandas will think it’s just one value.
+That’s why we used list(a) to break it into characters first.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
