@@ -1,1 +1,5 @@
-gcp test
+Can you tell me about a problem you encountered in your data engineering work that felt challenging, but you ultimately found a creative solution?
+
+Answer:- “In my insurance project, we were ingesting data from 11–12 different admin systems into Google Cloud Storage. A challenge I faced was that the incoming files had inconsistent naming conventions and timestamps, which made it difficult to align the data correctly and sometimes caused pipeline failures.
+My solution was to add a preprocessing step in the Bronze layer to standardize filenames and normalize timestamps before moving the data forward. I implemented simple transformation rules using Dataproc and SQL so that every file followed a consistent structure.
+This creative fix ensured that the rest of the pipeline — Silver and Gold layers — ran smoothly, and the data landed cleanly in BigQuery for analytics. It turned a recurring issue into a reliable process.”
