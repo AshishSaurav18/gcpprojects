@@ -1,0 +1,8 @@
+#How do you remove duplicate records in PySpark?
+---Remove all exact duplicates
+df = df.dropDuplicates()
+--. Remove duplicates based on specific columns--
+df = df.dropDuplicates(["column1", "column2"])
+-- Using Distinct()--
+df = df.distinct()
+========================================================================================================================
