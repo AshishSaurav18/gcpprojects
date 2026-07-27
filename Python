@@ -1,4 +1,4 @@
-Count the occurence of each character in String or list or Tuple.
+###############Count the occurence of each character in String or list or Tuple.##################
 ====================================================================================================================================
 collections is a built‑in Python module that provides specialized container datatypes to simplify and optimize data handling.
 Definition: Counter is a class inside the collections module that counts how many times each element appears in a sequence (string, list, tuple, etc.).
@@ -96,6 +96,49 @@ String → is treated as one single object by pandas. If you pass "Hello World" 
 That’s why we used list(a) to break it into characters first.
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2.• Remove duplicate elements from a list.
+---------Using PANDAS--------
+
+import pandas as pd 
+
+s = [1, 2, 3, 2, 3, 4, 5, 2]
+
+# ✅ Correct class name is DataFrame 
+df = pd.DataFrame(s, columns=["Number"])
+
+# ✅ Method name is drop_duplicates() (snake case, not camel case)
+clean_df = df.drop_duplicates()
+
+# Convert column back to list
+unique_list = clean_df["Number"].tolist()
+print(unique_list)
+---------------------------------------------------------------------------------------------------------
+#Loop method#
+my_list = [1, 2, 3, 4, 1, 2, 4, 5, 3]
+
+unique_list = []
+for item in my_list:
+    if item not in unique_list:   # check if already added
+        unique_list.append(item)  # add only if not present
+
+print(unique_list)
+
+append() ensures that each new unique value is added to the existing list, building it step by step.
+-------------------------------------------------------------------------------------------------------------
+  Using set():  
+“In Python, the simplest way to remove duplicates from a list is to convert it into a set,
+since sets only store unique values. For example:    
+my_list = [1,2,3,4,5,3,5]
+unique_list = list(set(my_list))- it doesn't preserve the order.
+------------------------------------------------------------------------------------------------------------
+Using dict.fromkeys():  
+“If I need to preserve the order, I use dict.fromkeys(). 
+Dictionaries don’t allow duplicate keys, 
+so converting the list into a dictionary and back gives me unique values in the same order:
+ my_list = [1,2,3,4,5,3,5]
+unique_list = list(dict.fromkeys(my_list))  
+-------------------------------------------------------------------------------------------------------
+
 
 
 
