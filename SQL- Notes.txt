@@ -39,3 +39,9 @@ We can interact with databases through five SQL sub-languages:
   UPDATE Customer SET Amount = Amount - 5000 WHERE Id = 1;  
   COMMIT;   -- Save changes  
   ROLLBACK; -- Undo changes
+
+===========================================================================================================
+
+Find employees who joined in 2025.
+
+select 
