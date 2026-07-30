@@ -98,6 +98,8 @@ That’s why we used list(a) to break it into characters first.
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 2.• Remove duplicate elements from a list.
 ---------Using PANDAS--------
+pd.Series → one‑dimensional, like a single column.
+Perfect when you just have a list or tuple of values and want to count or manipulate them.
 
 import pandas as pd 
 
@@ -138,9 +140,65 @@ so converting the list into a dictionary and back gives me unique values in the 
  my_list = [1,2,3,4,5,3,5]
 unique_list = list(dict.fromkeys(my_list))  
 -------------------------------------------------------------------------------------------------------
+------------------------------Q..Add numbers from 1 to 10 into a list-----------------------------------------------------
+Built‑in functions → no import needed.
+Library functions → import the library first.
+range() is a function
+Purpose: It generates a sequence of numbers.
+In Python, range(start, stop) generates numbers starting from start and goes up to but not including stop.
+==========================================================================================================
+numbers = list(range(1, 11))
+print(numbers)
+============================================================================================================
+Practice Questions
+Q1. List & Indexing  
+Create a list of squares of numbers from 1 to 10.
+
+Print the entire list.
+
+Then print the 5th element from the list.
+
+numbers = range(1,11)
+square_values = []
+for i in numbers:
+      square = (i*i)
+      square_values.append(square)
+
+print(square_values)
+
+----------------------------------------------------------------------------------------------------------------------
+list.index(value) → returns the position of the first occurrence of that value.
+
+Then you can use that index to access the element.
+
+If "banana" isn’t in the list, Python will raise a ValueError.
+
+Q. Print a specific element from a list.
+ my_list = [1,2,3,4,5,6,78]
+print(my_list[-1])
+
+By value (finding the index of an element)
+my_list = [1,2,3,4,5,6,78]
+
+index = my_list.index(78)   # finds the position of 78 in the list
+print(my_list[index])       # prints the element at that position
+
+
+
+=========================================================================================================================
+Q2.Write a program that:
+
+Creates a text file called numbers.txt and writes numbers 1 to 5 into it (each on a new line).
+
+Then, using a with statement, open the file and read its contents.
+
+Print the numbers you read as a list.
 
 
 
 
+
+
+=========================================================================================================================
 
 
