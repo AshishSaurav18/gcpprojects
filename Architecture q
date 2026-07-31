@@ -1,0 +1,94 @@
+📦 GCP Data Pipeline Design (500 GB/day)
+
+🔹 Landing Zone – Google Cloud Storage (GCS)
+→ Choice: Store raw data in GCS.
+→ Why: Highly scalable, durable, cost‑effective. Handles petabyte‑scale ingestion easily.
+
+🔹 Orchestration – Cloud Composer (Airflow)
+→ Choice: Use Cloud Composer for workflow scheduling.
+→ Why: DAG‑based orchestration, retries, dependency management. Reliable for large daily loads.
+
+🔹 Processing – Dataproc (Spark) / Dataflow (Apache Beam)
+→ Choice: Dataproc for batch Spark jobs, Dataflow for streaming or hybrid pipelines.
+→ Why: Distributed, serverless, scalable. Can process 500 GB efficiently.
+→ Transformation: Apply standardization (formats, units) + business rules (aggregations, classifications).
+
+🔹 Warehouse – BigQuery
+→ Choice: Load transformed data into BigQuery.
+→ Why: Serverless, columnar, highly scalable. Optimized for OLAP queries with denormalized schema.
+
+🔹 Analytics – Looker Studio / BI Tools
+→ Choice: Connect BI tools to BigQuery.
+→ Why: Enables dashboards, reports, and insights for business users without infra management.
+======================================================================================================================
+📦 Data Engineering Q&A Pack (SQL Server → GCP → BigQuery)
+
+Q1: How do you handle bad records during batch processing?
+- Run DQ checks (nulls, duplicates, schema validation).
+- Quarantine bad records into error bucket for audit.
+- Allow clean data to flow downstream so batch completes.
+- Reprocess bad records later once corrected.
+Follow-up: Why not stop the batch?
+→ SLA must be met. Clean data continues, bad data is isolated and reprocessed later.
+
+Q2: If the issue is upstream (source), how do you reprocess?
+- Identify root cause with source team.
+- Quarantine bad records.
+- Request corrected data or apply cleansing logic.
+- Reload only affected partitions in BigQuery.
+- Validate again before merging into silver/gold.
+Follow-up: How do you avoid reprocessing the whole dataset?
+→ Use partition-level reprocessing (overwrite/merge only impacted date).
+
+Q3: Batch already completed, corrected data arrives later. What do you do?
+- Stage corrected data in GCS.
+- Merge into BigQuery using MERGE or overwrite partition.
+- Check orchestration logs/metadata tables to see if downstream jobs ran.
+- If yes, re-trigger downstream DAGs for that partition (Airflow backfill).
+- Validate again to ensure consistency.
+
+Q4: How do you implement CDC or incremental loads from SQL Server to BigQuery?
+- Initial full load → baseline snapshot.
+- Then incremental loads daily/hourly using:
+   • SQL Server CDC tables
+   • Last modified timestamp
+   • GCP Datastream (log-based CDC)
+- Stage incremental data in GCS.
+- Use Dataflow/PySpark for DQ checks.
+- Merge into BigQuery partitions with MERGE.
+Follow-up: What if source doesn’t support CDC or timestamps?
+→ Use hash-based comparison between snapshots, reload recent partitions if append-only, or log-based capture via Datastream/Debezium. Maintain watermark metadata in BigQuery.
+
+Q5: How do you stage only changed data in GCS if it doesn’t support CDC?
+- CDC/incremental filtering happens at extraction stage (SQL queries or Datastream).
+- Only changed rows are extracted and written into GCS.
+- GCS stores partitioned files (by date/time).
+- Dataflow merges into BigQuery.
+
+Q6: What if source has no CDC and no timestamp column?
+- Full load initially → baseline snapshot.
+- Then:
+   • Hash-based comparison (row-level checksums).
+   • Partition reload strategy (reload last N days).
+   • Log-based capture via GCP Datastream.
+- Store incremental extracts in GCS.
+- Merge into BigQuery with partition overwrite/merge.
+
+📊 Visual Flow (GCP Optimal Design)
+SQL Server
+   │
+   ├── Full Load (Day 1) → GCS (Bronze)
+   │                          │
+   │                          └── BigQuery Baseline Snapshot
+   │
+   ├── Incremental Extract (CDC / Timestamp / Hash / Datastream)
+   │                          │
+   │                          └── GCS (Incremental Partitioned Files)
+   │
+   └── Dataflow / PySpark → DQ Checks → Quarantine Bad Records
+                              │
+                              └── BigQuery (Silver → Gold)
+                                     │
+                                     └── Orchestration (Cloud Composer)
+                                            │
+                                            └── Re-trigger downstream jobs if needed
