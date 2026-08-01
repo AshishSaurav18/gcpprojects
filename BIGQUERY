@@ -1,0 +1,66 @@
+📦 BIGQUERY / DREMEL ARCHITECTURE SUMMARY (Full Notes)
+
+1. Query Flow
+- User writes a query → Query hits the BigQuery system.
+- First, **Borg** (Google’s cluster management system) communicates with the query.
+- Borg allocates resources (CPU, memory, slots) across the cluster to run the query.
+- Then Dremel builds the execution plan and distributes tasks.
+
+2. Dremel Basics
+- Dremel is the query execution engine behind BigQuery.
+- Uses a tree architecture: Root → Intermediate Nodes → Leaf Nodes.
+- Queries fan out from root to leaves, results aggregate back up.
+- Designed for scalability and handling spikes in queries.
+
+3. Slots
+- Slots = units of computational capacity.
+- Multiple queries/users → slots distribute workload in parallel.
+- Execution plan is built, then slots execute tasks.
+- More slots = smoother handling of spikes.
+
+4. Leaf Nodes
+- Leaf nodes scan and process data.
+- If a leaf node fails, workload is reassigned to other nodes.
+- Ensures fault tolerance and query completion.
+
+5. Root & Intermediate Nodes
+- Root node coordinates query execution.
+- Intermediate nodes aggregate partial results from leaves.
+- Final results are sent back to the user.
+
+6. Colossus
+- Google’s distributed storage system.
+- BigQuery stores data in Colossus.
+- Provides durability, scalability, and fast access.
+
+7. Jupiter / White Network
+- Google’s high-speed network fabric.
+- Enables fast communication between nodes in the Dremel tree.
+- Critical for query fan-out and result aggregation.
+
+8. Swift Updates
+- BigQuery can quickly ingest and update data.
+- Streaming inserts allow near real-time analysis.
+
+9. Borg
+- Borg is Google’s cluster manager.
+- Handles scheduling, resource allocation, and fault tolerance.
+- Ensures queries get the compute resources they need.
+- Works closely with Dremel to execute queries efficiently.
+
+10. Interview-Style Questions
+- Q1: How does Dremel handle a sudden spike in queries?
+  → Parallel execution using slots, scalable tree architecture.
+- Q2: What happens if a leaf node fails?
+  → Workload is reassigned, system continues smoothly.
+- Q3: What role does Borg play in BigQuery?
+  → Borg manages cluster resources, schedules tasks, ensures fault tolerance.
+- Other possible questions:
+  • Explain Dremel’s tree architecture.
+  • Difference between root, intermediate, and leaf nodes.
+  • Role of Colossus in BigQuery.
+  • How does Jupiter/White Network help query execution?
+  • What are slots and why are they important?
+  • How does BigQuery achieve fault tolerance?
+  • How does BigQuery handle streaming data (Swift updates)?
+  • How Borg interacts with Dremel in query execution.
