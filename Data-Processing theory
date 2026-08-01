@@ -35,3 +35,55 @@ built on the open-source CDAP platform(Cask data application plateform).
 By simplifying ingestion, transformation, and integration, 
 Data Fusion enables teams to build scalable pipelines without heavy coding, 
 while still offering extensibility for advanced use cases.
+
+
+1. Dataflow vs Composer vs Dataproc
+- Dataflow: Stream & batch pipelines (Apache Beam).
+- Composer: Workflow orchestration (Apache Airflow).
+- Dataproc: Managed Hadoop/Spark clusters.
+
+2. Streaming Architecture (Pub/Sub → Dataflow → BigQuery)
+- Pub/Sub ingests events.
+- Dataflow processes/transforms.
+- BigQuery stores for analytics.
+
+3. GCS → BigQuery Pipeline (Apache Beam)
+- GCS holds raw files.
+- Dataflow reads + transforms (Map, Filter, ParDo).
+- BigQuery sink writes final tables.
+
+4. PCollection
+- Core Beam data structure.
+- Immutable, distributed dataset (bounded/unbounded).
+
+5. Autoscaling
+- Horizontal: Adjust worker count (default).
+- Vertical: Adjust CPU/memory (via Dataflow Prime).
+- Enabled automatically; vertical requires Prime.
+
+6. Map vs FlatMap
+- Map: 1 input → 1 output.
+- FlatMap: 1 input → 0,1,many outputs.
+
+7. ParDo
+- Parallel Do transform.
+- Applies user function to each element.
+- Supports side inputs/outputs + windowing.
+
+8. Dataflow Prime
+- Enhanced runtime.
+- Enables vertical autoscaling.
+- Optimizes resource usage for heavy jobs.
+
+9. Windowing
+- Groups unbounded streams into finite sets.
+- Types: Fixed, Sliding, Session, Global.
+
+10. Common Transforms
+- Partition, Combine, Map, FlatMap,
+- GroupByKey, Filter, etc.
+
+11. Dataflow Templates
+- Classic Templates: Pre‑built, parameterized (e.g., GCS → BigQuery).
+- Flex Templates: Custom Docker‑based, advanced pipelines.
+
