@@ -1,5 +1,68 @@
 📦 BIGQUERY / DREMEL ARCHITECTURE SUMMARY (Full Notes)
 
+USER
+                      │
+     Write SQL in BigQuery Editor
+                      │
+               Click "Run"
+                      │
+                      ▼
+         ┌─────────────────────────┐
+         │   BigQuery Frontend     │
+         │-------------------------│
+         │ • Parse SQL             │
+         │ • Validate Syntax       │
+         │ • Check IAM Permissions │
+         │ • Optimize Query        │
+         │ • Request Compute       │
+         └──────────┬──────────────┘
+                    │
+                    ▼
+         ┌─────────────────────────┐
+         │         Borg            │
+         │-------------------------│
+         │ Google's Cluster Manager│
+         │ • Finds machines        │
+         │ • Allocates CPU         │
+         │ • Allocates RAM         │
+         │ • Makes resources       │
+         │   available             │
+         └──────────┬──────────────┘
+                    │
+                    ▼
+         ┌─────────────────────────┐
+         │     BigQuery Slots      │
+         │-------------------------│
+         │ Compute units used      │
+         │ to execute query tasks  │
+         │ (parallel processing)   │
+         └──────────┬──────────────┘
+                    │
+                    ▼
+         ┌─────────────────────────┐
+         │        Dremel           │
+         │-------------------------│
+         │ Root Node               │
+         │ Intermediate Nodes      │
+         │ Leaf Nodes              │
+         │ Executes query using    │
+         │ allocated slots         │
+         └──────────┬──────────────┘
+                    │
+                    ▼
+         ┌─────────────────────────┐
+         │       Colossus          │
+         │-------------------------│
+         │ Reads table data        │
+         └──────────┬──────────────┘
+                    │
+                    ▼
+            Results returned
+          to BigQuery Frontend
+                    │
+                    ▼
+              BigQuery UI
+
 1. Query Flow
 - User writes a query → Query hits the BigQuery system.
 - First, **Borg** (Google’s cluster management system) communicates with the query.
