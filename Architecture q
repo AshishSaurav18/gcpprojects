@@ -88,7 +88,148 @@ SQL Server
    └── Dataflow / PySpark → DQ Checks → Quarantine Bad Records
                               │
                               └── BigQuery (Silver → Gold)
-                                     │
+ │
                                      └── Orchestration (Cloud Composer)
                                             │
                                             └── Re-trigger downstream jobs if needed
+
+====================================================================================================================
+Your company has a BigQuery dataset created in the Tokyo region for efficiency. 
+Now the company wants to move or duplicate this dataset into Germany. How can this be achieved?
+┌──────────────────────────────────────────────────────────────┐
+│          BIGQUERY DATASET MIGRATION METHODS                  │
+│  Dataset location is immutable (cannot be changed).          │
+│  Create a new dataset in Germany and choose one method.      │
+└──────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 1. TABLE COPY                                                │
+├──────────────────────────────────────────────────────────────┤
+│ Definition                                                   │
+│ • Direct BigQuery → BigQuery copy                           │
+│ • No Parquet/CSV files created                              │
+│                                                             │
+│ Architecture                                                │
+│                                                             │
+│ BigQuery (Tokyo)                                            │
+│        │                                                    │
+│   Copy Table                                                │
+│        ▼                                                    │
+│ BigQuery (Germany)                                          │
+│                                                             │
+│ Best For                                                    │
+│ • One-time migration                                        │
+│                                                             │
+│ Why?                                                        │
+│ ✔ Fastest                                                   │
+│ ✔ Cheapest                                                  │
+│ ✔ No intermediate storage                                   │
+│                                                             │
+│ Steps                                                       │
+│ 1. Create Germany dataset                                   │
+│ 2. Copy tables                                              │
+│ 3. Validate                                                 │
+│ 4. Switch application                                       │
+└──────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 2. DATA TRANSFER SERVICE                                    │
+├──────────────────────────────────────────────────────────────┤
+│ Definition                                                   │
+│ • Google-managed automatic data replication                 │
+│                                                             │
+│ Architecture                                                │
+│                                                             │
+│ BigQuery (Tokyo)                                            │
+│        │                                                    │
+│        ▼                                                    │
+│ Data Transfer Service                                       │
+│ (Daily / Hourly)                                            │
+│        │                                                    │
+│        ▼                                                    │
+│ BigQuery (Germany)                                          │
+│                                                             │
+│ Best For                                                    │
+│ • Continuous synchronization                                │
+│                                                             │
+│ Why?                                                        │
+│ ✔ Fully managed                                             │
+│ ✔ Automatic                                                 │
+│ ✔ Production-ready                                          │
+│                                                             │
+│ Steps                                                       │
+│ 1. Configure DTS                                            │
+│ 2. Set schedule                                             │
+│ 3. Google copies automatically                              │
+└──────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 3. SCHEDULED QUERY                                           │
+├──────────────────────────────────────────────────────────────┤
+│ Definition                                                   │
+│ • Scheduled SQL copies and transforms data                  │
+│                                                             │
+│ Architecture                                                │
+│                                                             │
+│ BigQuery (Tokyo)                                            │
+│        │                                                    │
+│        ▼                                                    │
+│ Scheduled SQL                                               │
+│ (JOIN / WHERE / GROUP BY)                                   │
+│        │                                                    │
+│        ▼                                                    │
+│ BigQuery (Germany)                                          │
+│                                                             │
+│ Best For                                                    │
+│ • SQL transformations                                       │
+│                                                             │
+│ Why?                                                        │
+│ ✔ Filtering                                                 │
+│ ✔ Aggregation                                               │
+│ ✔ Incremental loading                                       │
+│                                                             │
+│ Steps                                                       │
+│ 1. Write SQL                                                │
+│ 2. Schedule it                                              │
+│ 3. Query runs automatically                                 │
+└──────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ 4. EXPORT → IMPORT                                          │
+├──────────────────────────────────────────────────────────────┤
+│ Definition                                                   │
+│ • Export BigQuery tables as files to GCS                    │
+│ • Load those files into another BigQuery dataset            │
+│                                                             │
+│ Architecture                                                │
+│                                                             │
+│ BigQuery (Tokyo)                                            │
+│        │                                                    │
+│     Export                                                  │
+│        ▼                                                    │
+│ GCS Bucket                                                  │
+│ (Parquet / CSV / Avro / JSON)                               │
+│        │                                                    │
+│      Load                                                   │
+│        ▼                                                    │
+│ BigQuery (Germany)                                          │
+│                                                             │
+│ Best For                                                    │
+│ • Backup                                                    │
+│ • Archive                                                   │
+│ • File-based migration                                      │
+│                                                             │
+│ Why?                                                        │
+│ ✔ Creates backup files                                      │
+│ ✔ Can move across projects/clouds                           │
+│                                                             │
+│ Steps                                                       │
+│ 1. Export to GCS                                            │
+│ 2. Store Parquet/CSV files                                  │
+│ 3. Load into Germany dataset                                │
+└──────────────────────────────────────────────────────────────┘
+                                    
