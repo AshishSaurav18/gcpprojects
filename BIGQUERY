@@ -114,6 +114,14 @@ USER
 10. Interview-Style Questions
 - Q1: How does Dremel handle a sudden spike in queries?
   → Parallel execution using slots, scalable tree architecture.
+Dremel (the query execution engine behind BigQuery) uses a multi-level serving tree:
+
+Root node: Receives the query from the user.
+
+Intermediate nodes: Act as coordinators that split the query into smaller sub-queries and aggregate partial results.
+
+Leaf nodes: Actually scan the data (Parquet/Columnar storage) and return results upward.
+
 - Q2: What happens if a leaf node fails?
   → Workload is reassigned, system continues smoothly.
 - Q3: What role does Borg play in BigQuery?
