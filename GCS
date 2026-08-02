@@ -1,0 +1,41 @@
+📦 **Google Cloud Bucket Migration – Q&A**
+
+**Q1: What are the three ways to move data between buckets?**  
+- **Option 1:** Create a new bucket, copy data manually, then delete the old bucket.  
+- **Option 2:** Relocate bucket (not always possible, depends on region constraints).  
+- **Option 3:** Use **Storage Transfer Service** (recommended for large datasets).
+
+**Q2: Why is Storage Transfer Service the optimal solution?**  
+- Automates the transfer process.  
+- Handles large-scale migrations (e.g., 100 DB files).  
+- Allows scheduling and advanced settings.  
+- Option to delete source objects after transfer, saving cleanup effort.
+
+**Q3: Example scenario using Storage Transfer Service**  
+- You have 100 DB files in an old bucket.  
+- First, create a **destination bucket**.  
+- Open the **Transfer page** in Google Cloud Console.  
+- Create a **transfer job** → choose source bucket → choose destination bucket.  
+- Select settings (e.g., delete source files after transfer).  
+- Click **Create** → transfer begins automatically.  
+- Once complete, files are in the new bucket, and old bucket can be deleted separately.
+
+✅ **Conclusion:** For bulk data migration (like 100 DB files), **Storage Transfer Service** is the most efficient
+and reliable option compared to manual copy/delete or relocation.
+
+📦 **Google Cloud Bucket Deletion – Q&A**
+
+**Q1: What happens when you delete a bucket?**  
+- Once a bucket is deleted, its name becomes available for reuse by anyone.  
+- The release of the name usually takes only a few seconds.
+
+**Q2: Are there exceptions to the name reuse timing?**  
+- Yes. If you delete the entire project that contains the bucket, the bucket name may not be released for weeks or longer.  
+
+**Q3: Can you restore a deleted bucket if someone reuses its name?**  
+- No. Even if the bucket had soft delete enabled, once someone reuses the name, you cannot restore the original bucket.  
+
+**Example Scenario:**  
+Suppose you delete a bucket named `my-data-bucket`. Within seconds, another user could create a new bucket with the same name. If that happens, your original bucket cannot be restored—even if you had soft delete turned on.  
+
+
