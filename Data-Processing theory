@@ -66,11 +66,29 @@ while still offering extensibility for advanced use cases.
 6. Map vs FlatMap
 - Map: 1 input → 1 output.
 - FlatMap: 1 input → 0,1,many outputs.
+📌 Map vs FlatMap vs ParDo (Definitions + Real-Time Examples)
+
+- Map:
+  • Definition: Applies a function to each element, producing exactly one output per input (1 → 1).
+  • Example: Convert each log entry string to uppercase.
+    ("error found" → "ERROR FOUND")
+
+- FlatMap:
+  • Definition: Applies a function that can return zero, one, or many outputs per input (1 → 0..n).
+  • Example: Split each log entry (sentence) into words.
+    ("Server failed at midnight" → ["Server","failed","at","midnight"])
 
 7. ParDo
 - Parallel Do transform.
 - Applies user function to each element.
 - Supports side inputs/outputs + windowing.
+
+- ParDo:
+  • Definition: General-purpose parallel transform that applies complex user-defined logic (DoFn) to each element. Supports side inputs, side outputs, and windowing.
+  • Example: For each log entry:
+      - Check if it contains "ERROR"
+      - Add metadata from a lookup table (side input)
+      - Send clean logs to one output, error logs to another (side outputs)
 
 8. Dataflow Prime
 - Enhanced runtime.
