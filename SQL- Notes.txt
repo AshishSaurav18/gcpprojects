@@ -31,17 +31,47 @@ We can interact with databases through five SQL sub-languages:
 - Purpose: Grant and revoke permissions to users and roles. This is very important as you are liable to provide access to the right role or user.
 - Examples: GRANT SELECT ON Customer TO user1;  
   REVOKE SELECT ON Customer FROM user1;
+ALL PRIVILEGES → gives the user complete control (SELECT, INSERT, UPDATE, DELETE, etc.).
+ex- GRANT ALL PRIVILEGES ON EMPLOYEES TO JOHN DOE;
 
 ## 5. TCL – Transaction Control Language
 - Definition: TCL stands for Transaction Control Language. It is used to manage transactions in a database.
 - Purpose: Ensure data consistency and integrity by controlling transactions.
 - Examples: BEGIN TRANSACTION;  
   UPDATE Customer SET Amount = Amount - 5000 WHERE Id = 1;  
-  COMMIT;   -- Save changes  
+
+  COMMIT;  -- Save changes  
   ROLLBACK; -- Undo changes
+
+ex- Q1. A customer with Id = 1 places a new order worth 5000. Write a transaction that:
+
+Deducts 5000 from their Amount in the Customer table.
+
+Inserts a new row into the Orders table.
+
+Commit changes.
+
+BEGIN TRANSACTION;
+
+-- Deduct 50,000 from customer with Id = 1
+UPDATE Customer 
+SET Amount = Amount - 50000 
+WHERE Id = 1;
+
+-- Insert a new order (make sure column names match your Orders table)
+INSERT INTO Orders (orderNumber, customerName, orderDate)
+VALUES (1, 'Ashish', '2026-03-12');
+
+COMMIT;
+
 
 ===========================================================================================================
 
 Find employees who joined in 2025.
 
-select 
+select * FROM employees 
+where YEAR(Join_Date) = 2025;
+
+select * from employees
+where join_Date between '01-01-2025' and '31-12-2025';
+
