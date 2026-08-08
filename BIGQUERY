@@ -135,3 +135,13 @@ Leaf nodes: Actually scan the data (Parquet/Columnar storage) and return results
   • How does BigQuery achieve fault tolerance?
   • How does BigQuery handle streaming data (Swift updates)?
   • How Borg interacts with Dremel in query execution.
+
+====================================================================================================================
+
+
+📌 Definition of QUALIFY
+QUALIFY is a SQL clause (supported in BigQuery, Snowflake, etc.) that lets you 
+filter directly on the results of window functions(like ROW_NUMBER(), RANK(), DENSE_RANK()) 
+without needing to wrap the query in a subquery.
+Performance Benefit:-  
+By avoiding unnecessary subqueries, the optimizer can sometimes handle the query more efficiently.
