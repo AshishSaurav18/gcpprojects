@@ -43,4 +43,54 @@
 | - Provide connection strings in job configs.                 |
 +-------------------------------------------------------------+
 
+Q1: Why do we need to enable billing before creating a cluster?
+A1: Dataproc clusters run on Compute Engine VMs, use Cloud Storage, and may connect to BigQuery.
+All of these are paid services. Without billing enabled, 
+Google Cloud won’t let you provision resources because 
+there’s no way to charge for them. Think of it like activating a SIM card—you can’t make calls until billing is active.
+
+Q2: Why must the Dataproc API be enabled?
+A2: Every GCP service (Dataproc, BigQuery, Pub/Sub, etc.) is controlled via an API.
+The Dataproc API allows you to create, manage, and delete clusters programmatically. 
+If it’s not enabled, your cluster creation request will fail 
+because GCP doesn’t know you want to use Dataproc. 
+It’s like turning on the “switch” that allows your project to talk to Dataproc.
+
+Q3: Why are IAM roles / permissions important?
+A3: GCP uses IAM (Identity and Access Management) to control who can do what.
+To create a cluster, you need roles like Owner, Editor, or
+Dataproc Admin. Without proper permissions, even if billing and API are enabled, 
+you’ll get “Permission denied” errors. 
+This ensures only authorized people can spin up clusters (important for cost and security control).
+
+Q4: Why do we choose a region carefully?
+A4: Dataproc clusters are tied to a region (e.g., asia-south1 for Mumbai). 
+Your cluster must be in the same region as your data (Cloud Storage bucket, 
+BigQuery dataset) for low latency and reduced costs. If you choose a region far away
+
+Q5: Why is networking setup required?
+A5: Clusters need a VPC (Virtual Private Cloud) to communicate internally and with other GCP services.
+By default, GCP provides a “default” network, but in production you may need custom networks for security and isolation.
+Without networking, your cluster nodes can’t talk to each other or access storage. 
+It’s like building roads before you can move trucks between warehouses.
+
+Q6: Why do we assign a service account?
+A6: A service account is the identity your cluster uses to access other GCP services
+(like reading from Cloud Storage or writing to BigQuery). 
+If you don’t assign the right service account, your jobs may fail because 
+the cluster can’t access the data. This is the “digital ID card” for your cluster.
+
+Q7: Do we need to configure integration with GCP services or on-prem DBs during cluster creation?
+A7: No. Cluster creation is kept simple. 
+GCS works out-of-the-box. Other GCP services need IAM roles + connectors, 
+which you can add later. On-prem DBs require networking (VPN/Interconnect or firewall rules) and JDBC drivers,
+usually installed via init actions after the cluster is up.
+
+Q8: If data resides in an on-prem DB, will processing be slower?
+A8: Yes. 
+Because the cluster is in GCP and the DB is on-prem, 
+data must travel across WAN links. This adds latency, bandwidth limits, and costs. 
+Best practice is to migrate or replicate data into GCP storage (like GCS or BigQuery) 
+before running heavy Spark/Hadoop jobs. That way compute and data are co-located, ensuring faster and cheaper processing.
+
 
