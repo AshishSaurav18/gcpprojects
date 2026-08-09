@@ -93,4 +93,11 @@ data must travel across WAN links. This adds latency, bandwidth limits, and cost
 Best practice is to migrate or replicate data into GCP storage (like GCS or BigQuery) 
 before running heavy Spark/Hadoop jobs. That way compute and data are co-located, ensuring faster and cheaper processing.
 
+Q9: Why do we need to enable the Compute Engine API when creating a Dataproc cluster?
+
+A: We enable the Compute Engine API because Dataproc clusters are built on Compute Engine VMs. 
+It’s the foundation — without it, Dataproc has no infrastructure to run jobs.
+The API is what allows Dataproc to spin up, manage, and terminate the underlying virtual machines that form the cluster.
+
+
 
