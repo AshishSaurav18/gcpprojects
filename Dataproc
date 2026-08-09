@@ -1,0 +1,46 @@
+=====Dataproc Cluster Prerequisites & Integration================
+-------------------------------------------------------------+
+|  🔑 Prerequisites                                            |
++-------------------------------------------------------------+
+| 1. Enable Billing                                            |
+|    - Why: Needed to pay for VMs, storage, and jobs.          |
+|    - Without it: Cluster creation fails.                     |
+|                                                             |
+| 2. Enable Dataproc API                                       |
+|    - Why: Activates Dataproc service in your project.        |
+|    - Without it: Requests to create clusters are blocked.    |
+|                                                             |
+| 3. IAM Roles / Permissions                                   |
+|    - Why: Controls who can create/manage clusters.           |
+|    - Without it: "Permission denied" errors.                 |
+|                                                             |
+| 4. Choose Region                                             |
+|    - Why: Ensures data locality, reduces latency & cost.     |
+|    - Wrong choice: Slower jobs + higher network charges.     |
+|                                                             |
+| 5. Networking Setup                                          |
+|    - Why: Nodes need a VPC to talk to each other & GCP.      |
+|    - Without it: Cluster cannot communicate internally.      |
+|                                                             |
+| 6. Service Account                                           |
+|    - Why: Identity for cluster to access GCP services.       |
+|    - Without it: Jobs fail to read/write data.               |
++-------------------------------------------------------------+
+*************Integration with GCP & On-Prem************************************8
++-------------------------------------------------------------+
+|  🌐 Integration                                              |
++-------------------------------------------------------------+
+| Default: Cloud Storage (GCS)                                |
+| - Works out-of-the-box, no setup needed.                     |
+|                                                             |
+| Other GCP Services (BigQuery, Pub/Sub, Cloud SQL)           |
+| - Need IAM roles + connectors.                              |
+| - Configured after cluster creation.                        |
+|                                                             |
+| On-Prem Databases                                           |
+| - Need VPN/Interconnect or firewall rules.                  |
+| - Install JDBC drivers via init actions.                    |
+| - Provide connection strings in job configs.                 |
++-------------------------------------------------------------+
+
+
