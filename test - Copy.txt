@@ -31,6 +31,32 @@ if "Cust_ID" in clean_df.columns:
 clean_df = clean_df.withColumn("CustomerName", regexp_replace(col("CustomerName"), "[^a-zA-Z0-9 ]", ""))
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 For string cleanup, I used PySpark’s regexp_replace function. It allowed me to remove special characters from text fields like CustomerName, Address, or City. I applied this consistently across all string columns that needed normalization.”
+
+
+==========================================================================================================
+
+Q1: What is a Data Warehouse?
+A: A Data Warehouse is a central repository designed to store large volumes of historical, structured data. It is optimized for analytical queries (OLAP) and supports decision-making by consolidating data from multiple sources. It is mainly used for reporting, dashboards, and trend analysis.
+
+Q2: What are the key characteristics of a Data Warehouse?
+A: A Data Warehouse is:
+   - Integrated: Combines data from multiple heterogeneous sources.
+   - Subject-Oriented: Organized around business domains (sales, customers, etc.).
+   - Non-Volatile: Once data is loaded, it remains stable and is not frequently changed.
+   - Time-Variant: Stores historical data with timestamps for trend analysis.
+   - Structured: Primarily handles structured data for consistent reporting.
+
+Q3: Difference between Database (DB) and Data Warehouse (DWH)?
+A:
+   - Database (DB): Designed for day-to-day operations (OLTP). Handles current, transactional data (insert, update, delete). Optimized for speed and consistency in small queries.
+   - Data Warehouse (DWH): Designed for analytics (OLAP). Stores historical, aggregated data. Optimized for complex queries, reporting, and trend analysis.
+
+Q4: Data Warehouse vs Spark
+A:
+   - Data Warehouse: Storage + query system for structured, historical data. Best for business intelligence, dashboards, and reporting.
+   - Spark: A distributed data processing framework. Best for large-scale computation, ETL pipelines, real-time streaming, and advanced analytics (ML, graph processing).
+   - In practice: Spark often processes raw data and loads it into a Data Warehouse for reporting and visualization.
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 6. Write cleaned data back to branch layer in a consistent format
 clean_df.write.mode("overwrite").parquet("gs://your-bucket/branch-layer/cleaned-data/")
