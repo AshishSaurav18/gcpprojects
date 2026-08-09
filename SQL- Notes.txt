@@ -75,3 +75,86 @@ where YEAR(Join_Date) = 2025;
 select * from employees
 where join_Date between '01-01-2025' and '31-12-2025';
 
+===========================================================================================================
+
+*2nd Highest Salary
+
+SELECT MAX(salary) AS second_highest
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+
+SELECT *
+FROM (
+   SELECT emp_id, salary,
+          DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk
+   FROM employees
+) salary_rnk
+WHERE rnk = 2;
+
+SELECT *
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+==============================================================================================================
+Highest salary per department
+SELECT *
+FROM (
+   SELECT emp_id, emp_name, salary,
+          DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+   FROM employees
+) emp
+WHERE rnk = 1;
+================================================================================================================
+Find & Remove Duplicates in SQL:
+
+COUNT(*) → counts all rows, regardless of column values.
+
+COUNT(column_name) → counts only rows where that column is NOT NULL.
+
+SELECT emp_name, COUNT(*)
+FROM employees
+GROUP BY emp_name
+HAVING COUNT(*) > 1;
+
+Remove the duplicate value
+DELETE 
+FROM employees
+WHERE emp_id NOT IN (
+   SELECT MIN(emp_id)
+   FROM employees
+   GROUP BY emp_name
+);
+================================================================================================================
+Running totals: - Write an SQL query to calculate the running total of salaries for employees, ordered by their employee ID.
+
+SUM(salary) → adds salaries.
+
+OVER → tells SQL to show the sum row by row instead of collapsing.
+
+ORDER BY → defines the order in which the cumulative sum is built.
+
+SELECT emp_name, emp_id, salary,
+       SUM(salary) OVER (ORDER BY emp_id) AS running_total
+FROM employees;
+====================================================================================================================
+MERGE SYNTAX SCD TYPE 1:
+MERGE INTO target_table AS T
+USING source_table AS S
+ON T.emp_id = S.emp_id
+WHEN MATCHED THEN
+  UPDATE SET T.salary = S.salary, T.department = S.department
+WHEN NOT MATCHED THEN
+  INSERT (emp_id, emp_name, salary, department)
+  VALUES (S.emp_id, S.emp_name, S.salary, S.department);
+
+SCD TYPE 2:
+MERGE INTO target_dim AS T
+USING source_dim AS S
+ON T.emp_id = S.emp_id AND T.is_current = TRUE
+WHEN MATCHED AND T.salary <> S.salary THEN
+  UPDATE SET T.is_current = FALSE, T.end_date = CURRENT_DATE()
+WHEN NOT MATCHED THEN
+  INSERT (emp_id, emp_name, salary, start_date, end_date, is_current)
+  VALUES (S.emp_id, S.emp_name, S.salary, CURRENT_DATE(), NULL, TRUE);
+=============================================================================================================
+
