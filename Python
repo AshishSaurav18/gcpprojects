@@ -1,7 +1,9 @@
 ###############Count the occurence of each character in String or list or Tuple.##################
 ====================================================================================================================================
-collections is a built‑in Python module that provides specialized container datatypes to simplify and optimize data handling.
-Definition: Counter is a class inside the collections module that counts how many times each element appears in a sequence (string, list, tuple, etc.).
+collections is a built‑in Python module that provides specialized container datatypes to 
+simplify and optimize data handling.
+Definition: Counter is a class inside the collections module that counts how many times each element appears in a 
+sequence (string, list, tuple, etc.).
 Purpose: It creates a dictionary-like object where keys are the elements and values are their counts.
 =====================================================================================================================================
 from collections import Counter
@@ -193,7 +195,20 @@ Creates a text file called numbers.txt and writes numbers 1 to 5 into it (each o
 Then, using a with statement, open the file and read its contents.
 
 Print the numbers you read as a list.
+=====================================================================================================================
+**************Find the 4th largest number from the list**********
+input = [10, 20, 30, 30 ,460, 60, 60, 46,60, 9]
+fourthhighest = list(set(input))
+fourthhighest.sort(reverse =True) #### reverse = True is for desc order ####
+print(fourthhighest[3])
 
+**************Find the 2nd largest number from the list**********
+input = [10, 20, 30, 30 ,460, 60, 60, 46,60, 9]
+fourthhighest = list(set(input))
+fourthhighest.sort(reverse =True) #### reverse = True is for desc order ####
+print(fourthhighest[1])
+
+=====================================================================================================================
 
 
 
