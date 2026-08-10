@@ -23,5 +23,62 @@ df = spark.read.csv("path", header=True, inferSchema=True)
 result = df.groupBy("department").agg(F.max("salary").alias("highest_salary"))
 
 result.show()
+_____________________________________________________________________________________________________________________
+Write PySpark code to find the 2nd highest salary in each department.
+
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql import Window
+
+# 1. Create Spark session
+spark = SparkSession.builder \
+    .appName("Second Highest Salary") \
+    .master("local") \
+    .getOrCreate()
+
+# 2. Read CSV file into DataFrame
+df = spark.read.csv("path", header=True, inferSchema=True)
+
+# 3. Define window: partition by Department, order salaries descending
+windowSpec = Window.partitionBy("Department").orderBy(F.desc("Salary"))
+
+# 4. Add a rank column using dense_rank over the window
+df_ranked = df.withColumn("rank", F.dense_rank().over(windowSpec))
+
+# 5. Filter rows where rank = 2 (second highest salary per department)
+df_second_highest = df_ranked.filter(F.col("rank") == 2)
+
+# 6. Show the result
+df_second_highest.show()
+
+-----------------------------------------------------------------------------------------------------------------------
+Write PySpark code to find the 2nd highest salary overall.
+
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql import Window
+
+# 1. Create Spark session
+spark = SparkSession.builder \
+    .appName("Second Highest Salary Overall") \
+    .master("local") \
+    .getOrCreate()
+
+# 2. Read CSV file
+df = spark.read.csv("path", header=True, inferSchema=True)
+
+# 3. Define window: order salaries descending (no partitioning)
+windowSpec = Window.orderBy(F.desc("Salary"))
+
+# 4. Add rank column using dense_rank over the window
+df_ranked = df.withColumn("rank", F.dense_rank().over(windowSpec))
+
+# 5. Filter rows where rank = 2 (second highest salary overall)
+df_second_highest = df_ranked.filter(F.col("rank") == 2)
+
+# 6. Show result
+df_second_highest.show()
+
+
 
 
