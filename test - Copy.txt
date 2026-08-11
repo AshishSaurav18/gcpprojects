@@ -198,6 +198,36 @@ Row level	Row access policy: managers see only their department’s rows.
 Encryption	CMEK: customer‑managed keys for sensitive datasets.
 Monitoring	Audit logs + Sensitive Data Protection scans.
 
+SCD Type 1: In SCD Type 1, when a change occurs in a dimension attribute, the old value is overwritten with the new value. This means that historical data is not preserved, and only the latest information is retained. 
+
+SCD Type 2: In SCD Type 2, when a change occurs in a dimension attribute, a new row is inserted into the dimension table with the updated attribute values. This allows you to maintain a history of changes over time by preserving both the old and new values. 
+
+SCD Type 3: when a change occurs in a dimension attribute, the current value is updated and the old value is stored in an additional column (such as previous_value).
+ This means that only the current and one prior value are preserved.
+
+employee_id | department | designation | location
+-------------------------------------------------    -The base table
+201         | Sales      | Executive   | Delhi
+
+
+employee_id | department | designation | location
+-------------------------------------------------   - SCD TYPE 1
+201         | Marketing     | Manager   | Pune
+
+
+
+
+employee_id | department | designation | location | start_date | end_date   | is_current
+----------------------------------------------------------------------------------------  SCD TYPE- 2
+201         | Sales      | Executive   | Delhi    | 2025-01-01 | 2026-08-10 | N
+201         | Marketing  | Manager     | Pune     | 2026-08-11 | NULL       | Y
+
+employee_id | current_department | previous_department | current_designation | previous_designation | current_location | previous_location
+-------------------------------------------------------------------------------------------------------------------------------
+201         | Marketing          | Sales               | Manager             | Executive            | Pune             | Delhi -SCD-TYPE 3
+
+
+
 clean_df.write.mode("overwrite").parquet("gs://your-bucket/branch-layer/cleaned-data/")
 
 
