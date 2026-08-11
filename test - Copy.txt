@@ -59,6 +59,136 @@ A:
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 6. Write cleaned data back to branch layer in a consistent format
+
+
+
+
+
+
+
+Q1: Latest record per event_id in SQL
+Table:
+event_id   user   created_at
+E1         U1     2026-01-01 10:00
+E1         U1     2026-01-01 10:05
+E2         U2     2026-01-01 10:00
+
+Query:
+SELECT event_id, user, created_at
+FROM (
+    SELECT event_id,
+           user,
+           created_at,
+           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY created_at DESC) AS rn
+    FROM events
+) t
+WHERE event_id = 'E2';
+
+Answer:
+Use ROW_NUMBER() with PARTITION BY event_id ORDER BY created_at DESC, then filter rn=1.
+
+------------------------------------------------------------
+
+Q2: Running total of salary per department
+Table:
+emp_id   dept_id   salary
+1        D1        1000
+2        D1        1200
+3        D2        1500
+
+Query:
+SELECT emp_id,
+       dept_id,
+       salary,
+       SUM(salary) OVER (PARTITION BY dept_id ORDER BY emp_id) AS dept_running_total
+FROM employees;
+
+Answer:
+Use window functions with PARTITION BY dept_id and ORDER BY emp_id.
+
+------------------------------------------------------------
+
+Q3: Which is more efficient in Spark?
+Case 1:
+df.cache()
+df.count()
+df.count()
+
+Case 2:
+df.cache()
+df.count()
+
+Answer:
+Case 2 is efficient if you only need count once. Case 1 is better if you reuse df multiple times.
+
+------------------------------------------------------------
+
+Q4: Data skew — what is it and how to reduce?
+Answer:
+Uneven distribution of data across partitions. Solutions: salting keys, repartitioning, broadcast joins, splitting heavy keys.
+
+------------------------------------------------------------
+
+Q5: Lazy evaluation in Spark
+Answer:
+Transformations are not executed immediately; execution happens only when an action is triggered.
+
+------------------------------------------------------------
+
+Q6: Repartition vs Coalesce — how do they improve performance?
+Answer:
+- repartition(): balances workload with shuffle.
+- coalesce(): reduces partitions without shuffle.
+
+------------------------------------------------------------
+
+Q7: BigQuery optimization
+Answer:
+Partitioning (date, range, integer) and clustering (frequently filtered columns) improve performance and reduce cost.
+
+------------------------------------------------------------
+
+Q8: Cache vs Persist
+Answer:
+- cache(): MEMORY_ONLY shortcut.
+- persist(): flexible storage levels (memory, disk, both).
+
+------------------------------------------------------------
+
+Q9: Rank(), Dense_Rank(), Row_Number()
+Table:
+emp_id   salary
+1        5000
+2        5000
+3        6000
+
+Answer:
+- rank(): assigns same rank to ties, skips next numbers.
+- dense_rank(): assigns same rank to ties, no gaps.
+- row_number(): unique sequential number per row.
+
+------------------------------------------------------------
+
+Q10: Action vs Transformation (example)
+Answer:
+- Transformation: lazy, returns new RDD/DataFrame (map, filter).
+- Action: triggers execution, returns result (count, collect).
+
+------------------------------------------------------------
+
+Q11: Advantages of Coalesce and Repartition
+Answer:
+- coalesce(): efficient for reducing partitions without shuffle.
+- repartition(): balances data for parallelism.
+
+------------------------------------------------------------
+
+Q12: If a new column is added to a table, how can you implement partitioning on it?
+Answer:
+You cannot directly repartition an existing table on a newly added column. 
+The correct approach is to create a new table or dataset partitioned by that column from the start. 
+This ensures Spark/Hive can organize data efficiently according to the new partitioning strategy.
+
 clean_df.write.mode("overwrite").parquet("gs://your-bucket/branch-layer/cleaned-data/")
 
 
