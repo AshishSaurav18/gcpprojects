@@ -137,7 +137,12 @@ SELECT emp_name, emp_id, salary,
        SUM(salary) OVER (ORDER BY emp_id) AS running_total
 FROM employees;
 ====================================================================================================================
-MERGE SYNTAX SCD TYPE 1:
+Question:  
+In a Slowly Changing Dimension (SCD) Type 1 implementation, when a match is found between the source and target tables during a MERGE operation, how are the columns updated? Do the updates occur only when the new value is different from the existing one, or are the specified columns always overwritten regardless of whether the values are the same?
+
+Answer:  
+In SCD Type 1, the specified columns in the target table are always overwritten with the values from the source table whenever a match is found. The update does not check whether the new value is different from the existing one — it simply replaces the old data with the new data. If the values are identical, the update still executes, but the data remains unchanged. This approach ensures that the dimension table always reflects the most current information, but it does not preserve any historical data.
+-------------------MERGE SYNTAX SCD TYPE 1:-----------------------------------------------
 MERGE INTO target_table AS T
 USING source_table AS S
 ON T.emp_id = S.emp_id
@@ -157,4 +162,29 @@ WHEN NOT MATCHED THEN
   INSERT (emp_id, emp_name, salary, start_date, end_date, is_current)
   VALUES (S.emp_id, S.emp_name, S.salary, CURRENT_DATE(), NULL, TRUE);
 =============================================================================================================
+SCD TYPE 3:
+MERGE INTO employees_dim AS T
+USING source AS S
+ON T.emp_id = S.emp_id
+WHEN MATCHED AND T.current_salary <> S.salary THEN
+  UPDATE SET T.previous_salary = T.current_salary,
+             T.current_salary = S.salary
+WHEN NOT MATCHED THEN
+  INSERT (emp_id, emp_name, current_salary, previous_salary)
+  VALUES (S.emp_id, S.emp_name, S.salary, NULL);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
