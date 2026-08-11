@@ -189,6 +189,15 @@ You cannot directly repartition an existing table on a newly added column.
 The correct approach is to create a new table or dataset partitioned by that column from the start. 
 This ensures Spark/Hive can organize data efficiently according to the new partitioning strategy.
 
+*Data Security how you implement it?*
+Layer	Control Applied
+Dataset level	IAM roles: only analysts get dataViewer, admins get dataOwner.
+Table level	Authorized views: expose only non‑sensitive columns.
+Column level	Policy tags: restrict access to “salary” or “SSN” columns.
+Row level	Row access policy: managers see only their department’s rows.
+Encryption	CMEK: customer‑managed keys for sensitive datasets.
+Monitoring	Audit logs + Sensitive Data Protection scans.
+
 clean_df.write.mode("overwrite").parquet("gs://your-bucket/branch-layer/cleaned-data/")
 
 
